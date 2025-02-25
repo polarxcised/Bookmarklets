@@ -1,0 +1,1 @@
+javascript:(function(){function randomColor(){return 'rgb('+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+')';}document.body.style.transition='background 1s';setInterval(function(){document.body.style.background=randomColor();},1000);})();

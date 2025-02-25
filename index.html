@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bookmarklet Maker & Ask AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Free Font Awesome 6.0.0 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://kit.fontawesome.com/e328bff894.js" crossorigin="anonymous" data-analytics="0"></script>
+  <style>
+    :root {
+      --bg-primary: #0d1117;
+      --bg-secondary: #161b22;
+      --text-primary: #ffffff;
+      --text-secondary: #8b949e;
+      --accent-color: #58a6ff;
+      --border-color: #30363d;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: "Courier New", Courier, monospace;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      padding-bottom: 80px; /* space for footer */
+    }
+    /* Particles.js Background */
+    #particles-js {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    /* Navigation */
+    nav {
+      background: rgba(13, 17, 23, 0.95);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    nav h1 {
+      font-size: 1.5rem;
+      color: var(--accent-color);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    nav a {
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 1rem;
+      transition: color 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-left: 20px;
+    }
+    nav a:hover {
+      color: var(--accent-color);
+    }
+    /* Main Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      text-align: center;
+    }
+    /* README Section */
+    .readme {
+      background-color: var(--bg-secondary);
+      border: 2px solid var(--accent-color);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: left;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .readme h3 {
+      color: var(--accent-color);
+      margin-bottom: 10px;
+    }
+    .readme p {
+      margin-bottom: 10px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    h2 {
+      margin: 40px 0 20px;
+      font-size: 1.8rem;
+      color: var(--accent-color);
+    }
+    /* Maker & Ask AI Section styling */
+    .maker-section {
+      background-color: var(--bg-secondary);
+      border: 2px solid var(--accent-color);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: left;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .maker-section label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+      color: var(--accent-color);
+    }
+    .maker-section textarea {
+      width: 100%;
+      height: 150px;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: "Courier New", Courier, monospace;
+      resize: vertical;
+    }
+    .maker-section button {
+      background-color: var(--accent-color);
+      color: var(--text-primary);
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      font-family: "Courier New", Courier, monospace;
+      margin-top: 10px;
+    }
+    .maker-section button:hover {
+      background-color: #3392ff;
+    }
+    #generated-output, #ai-response {
+      display: none;
+      margin-top: 20px;
+    }
+    #generated-output label,
+    #ai-response label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+      color: var(--accent-color);
+    }
+    #generated-output pre,
+    #ai-response pre {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      padding: 10px;
+      border-radius: 5px;
+      overflow-x: auto;
+      color: var(--text-primary);
+    }
+    /* Bookmarklet Card styling */
+    .bookmarklet-card {
+      background-color: var(--bg-secondary);
+      border: 2px solid var(--accent-color);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      animation: borderPulse 3s infinite;
+      text-align: left;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    @keyframes borderPulse {
+      0% { border-color: var(--accent-color); }
+      50% { border-color: #3392ff; }
+      100% { border-color: var(--accent-color); }
+    }
+    .bookmarklet-card h3 {
+      color: var(--accent-color);
+      margin-bottom: 10px;
+    }
+    .bookmarklet-card pre {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      padding: 10px;
+      border-radius: 5px;
+      overflow-x: auto;
+      color: var(--text-primary);
+    }
+    /* Copy Button */
+    .copy-btn {
+      background-color: var(--accent-color);
+      color: var(--text-primary);
+      border: none;
+      border-radius: 5px;
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      font-family: "Courier New", Courier, monospace;
+      margin-top: 10px;
+    }
+    .copy-btn:hover {
+      background-color: #3392ff;
+    }
+    /* Footer */
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: var(--bg-secondary);
+      padding: 15px 0;
+      text-align: center;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.3);
+    }
+    footer p {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <!-- Particles.js Background -->
+  <div id="particles-js"></div>
+
+  <!-- Navigation -->
+  <nav>
+    <h1><i class="fas fa-bookmark"></i> Bookmark Maker</h1>
+    <div>
+      <a href="https://github.com" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a>
+      <a href="https://twitter.com" target="_blank"><i class="fa-brands fa-x-twitter"></i> Twitter</a>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- README Section -->
+    <div class="readme">
+      <h3>README</h3>
+      <p>Welcome to the Bookmarklet Maker & Ask AI site! Here’s how to use it:</p>
+      <ul style="margin-left:20px; list-style: disc; color: var(--text-secondary);">
+        <li><strong>Bookmarklet Maker:</strong> Enter your JavaScript code into the text area and click "Generate Bookmarklet." Your code will be wrapped in an immediately invoked function expression and prefixed with <code>javascript:</code>. Then copy the code and save it as a bookmark.</li>
+        <li><strong>Ask AI:</strong> Type a query (for example, "Make me one where it rotates the page") and click "Ask AI." The AI (configured as a bookmarklet maker) will produce a bookmarklet solution for you. You can copy the response and use it as a bookmark.</li>
+        <li><strong>My Bookmarklets:</strong> Browse through a collection of pre-made bookmarklets and copy any you like.</li>
+      </ul>
+      <p>Enjoy creating and using bookmarklets!</p>
+    </div>
+
+    <!-- Maker Section (on top) -->
+    <h2>Bookmarklet Maker</h2>
+    <div class="maker-section">
+      <label for="bookmarklet-input">Enter your JavaScript code:</label>
+      <textarea id="bookmarklet-input" placeholder="e.g. alert('Hello World!');"></textarea>
+      <button id="generate-btn">Generate Bookmarklet</button>
+      <div id="generated-output">
+        <label>Your Bookmarklet Code:</label>
+        <pre id="output-code"></pre>
+        <button class="copy-btn" id="copy-generated-btn" data-code="">Copy Bookmarklet</button>
+      </div>
+    </div>
+
+    <!-- Ask AI Section -->
+    <h2>Ask AI</h2>
+    <div class="maker-section">
+      <label for="ai-input">Enter your query (e.g., "Make me one where it rotates the page"):</label>
+      <textarea id="ai-input" placeholder="Ask for a bookmarklet..."></textarea>
+      <button id="ask-ai-btn">Ask AI</button>
+      <div id="ai-response">
+        <label>AI Response:</label>
+        <pre id="ai-output"></pre>
+        <button class="copy-btn" id="copy-ai-btn" data-code="">Copy Response</button>
+      </div>
+    </div>
+
+    <!-- Pre-Made Bookmarklets Section -->
+    <h2>My Bookmarklets</h2>
+    <!-- 1. Rainbow Background -->
+    <div class="bookmarklet-card">
+      <h3>Rainbow Background</h3>
+      <pre>javascript:(function(){function randomColor(){return 'rgb('+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+')';}document.body.style.transition='background 1s';setInterval(function(){document.body.style.background=randomColor();},1000);})();</pre>
+      <button class="copy-btn" data-code="javascript:(function(){function randomColor(){return 'rgb('+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+')';}document.body.style.transition='background 1s';setInterval(function(){document.body.style.background=randomColor();},1000);})();">Copy</button>
+    </div>
+    <!-- 2. Random RGB Text -->
+    <div class="bookmarklet-card">
+      <h3>Random RGB Text</h3>
+      <pre>javascript:(function(){function randomColor(){return 'rgb('+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+')';}document.querySelectorAll('p').forEach(function(el){el.style.color=randomColor();});})();</pre>
+      <button class="copy-btn" data-code="javascript:(function(){function randomColor(){return 'rgb('+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+')';}document.querySelectorAll('p').forEach(function(el){el.style.color=randomColor();});})();">Copy</button>
+    </div>
+    <!-- 3. Shake Everything -->
+    <div class="bookmarklet-card">
+      <h3>Shake Everything</h3>
+      <pre>javascript:(function(){var s=document.createElement('style');s.innerHTML="* { animation: shake 0.5s infinite !important; } @keyframes shake { 0% { transform: translate(1px, 1px); } 10% { transform: translate(-1px, -2px); } 20% { transform: translate(-3px, 0px); } 30% { transform: translate(3px, 2px); } 40% { transform: translate(1px, -1px); } 50% { transform: translate(-1px, 2px); } 60% { transform: translate(-3px, 1px); } 70% { transform: translate(3px, 1px); } 80% { transform: translate(-1px, -1px); } 90% { transform: translate(1px, 2px); } 100% { transform: translate(1px, -2px); } }";document.head.appendChild(s);})();</pre>
+      <button class="copy-btn" data-code="javascript:(function(){var s=document.createElement('style');s.innerHTML='* { animation: shake 0.5s infinite !important; } @keyframes shake { 0% { transform: translate(1px, 1px); } 10% { transform: translate(-1px, -2px); } 20% { transform: translate(-3px, 0px); } 30% { transform: translate(3px, 2px); } 40% { transform: translate(1px, -1px); } 50% { transform: translate(-1px, 2px); } 60% { transform: translate(-3px, 1px); } 70% { transform: translate(3px, 1px); } 80% { transform: translate(-1px, -1px); } 90% { transform: translate(1px, 2px); } 100% { transform: translate(1px, -2px); } }';document.head.appendChild(s);})();">Copy</button>
+    </div>
+    <!-- 4. Invert Colors -->
+    <div class="bookmarklet-card">
+      <h3>Invert Colors</h3>
+      <pre>javascript:(function(){document.documentElement.style.filter='invert(1)';})();</pre>
+      <button class="copy-btn" data-code="javascript:(function(){document.documentElement.style.filter='invert(1)';})();">Copy</button>
+    </div>
+    <!-- 5. Blink Paragraphs -->
+    <div class="bookmarklet-card">
+      <h3>Blink Paragraphs</h3>
+      <pre>javascript:(function(){var s=document.createElement('style');s.innerHTML="@keyframes blink{0%{opacity:1;}50%{opacity:0.2;}100%{opacity:1;}} .blink{animation: blink 1s infinite;}";document.head.appendChild(s);document.querySelectorAll('p').forEach(function(el){el.classList.add('blink');});})();</pre>
+      <button class="copy-btn" data-code="javascript:(function(){var s=document.createElement('style');s.innerHTML='@keyframes blink{0%{opacity:1;}50%{opacity:0.2;}100%{opacity:1;}} .blink{animation: blink 1s infinite;}';document.head.appendChild(s);document.querySelectorAll('p').forEach(function(el){el.classList.add('blink');});})();">Copy</button>
+    </div>
+    <!-- 6. Rotating Page -->
+    <div class="bookmarklet-card">
+      <h3>Rotating Page</h3>
+      <pre>javascript:(function(){var deg=0;document.body.style.transition='transform 0.1s';setInterval(function(){deg+=5;document.body.style.transform='rotate('+deg+'deg)';},100);})();</pre>
+      <button class="copy-btn" data-code="javascript:(function(){var deg=0;document.body.style.transition='transform 0.1s';setInterval(function(){deg+=5;document.body.style.transform='rotate('+deg+'deg)';},100);})();">Copy</button>
+    </div>
+    <!-- 7. Particle Burst on Click -->
+    <div class="bookmarklet-card">
+      <h3>Particle Burst on Click</h3>
+      <pre>javascript:(function(){document.addEventListener('click',function(e){var c=document.createElement('div');c.style.position='absolute';c.style.left=e.pageX+'px';c.style.top=e.pageY+'px';c.style.width='20px';c.style.height='20px';c.style.borderRadius='50%';c.style.background='rgb('+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+')';c.style.transition='opacity 1s, transform 1s';document.body.appendChild(c);setTimeout(function(){c.style.opacity='0';c.style.transform='scale(3)';},0);setTimeout(function(){c.remove();},1000);});})();</pre>
+      <button class="copy-btn" data-code="javascript:(function(){document.addEventListener('click',function(e){var c=document.createElement('div');c.style.position='absolute';c.style.left=e.pageX+'px';c.style.top=e.pageY+'px';c.style.width='20px';c.style.height='20px';c.style.borderRadius='50%';c.style.background='rgb('+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+')';c.style.transition='opacity 1s, transform 1s';document.body.appendChild(c);setTimeout(function(){c.style.opacity='0';c.style.transform='scale(3)';},0);setTimeout(function(){c.remove();},1000);});})();">Copy</button>
+    </div>
+    <!-- 8. Glitch Images -->
+    <div class="bookmarklet-card">
+      <h3>Glitch Images</h3>
+      <pre>javascript:(function(){var s=document.createElement('style');s.innerHTML=".glitch{position:relative;animation:glitch 1s infinite;} @keyframes glitch {0% {clip: rect(42px,9999px,44px,0);transform: translate(0.5px,-0.5px);}20% {clip: rect(12px,9999px,65px,0);transform: translate(-1px,1px);}40% {clip: rect(85px,9999px,140px,0);transform: translate(1px,-1px);}60% {clip: rect(20px,9999px,60px,0);transform: translate(-0.5px,0.5px);}80% {clip: rect(40px,9999px,80px,0);transform: translate(0.5px,-0.5px);}100% {clip: rect(42px,9999px,44px,0);transform: translate(0);}}";document.head.appendChild(s);document.querySelectorAll('img').forEach(function(el){el.classList.add('glitch');});})();</pre>
+      <button class="copy-btn" data-code="javascript:(function(){var s=document.createElement('style');s.innerHTML='.glitch{position:relative;animation:glitch 1s infinite;} @keyframes glitch {0% {clip: rect(42px,9999px,44px,0);transform: translate(0.5px,-0.5px);}20% {clip: rect(12px,9999px,65px,0);transform: translate(-1px,1px);}40% {clip: rect(85px,9999px,140px,0);transform: translate(1px,-1px);}60% {clip: rect(20px,9999px,60px,0);transform: translate(-0.5px,0.5px);}80% {clip: rect(40px,9999px,80px,0);transform: translate(0.5px,-0.5px);}100% {clip: rect(42px,9999px,44px,0);transform: translate(0);}}';document.head.appendChild(s);document.querySelectorAll('img').forEach(function(el){el.classList.add('glitch');});})();">Copy</button>
+    </div>
+    <!-- 9. Scale Up Images -->
+    <div class="bookmarklet-card">
+      <h3>Scale Up Images</h3>
+      <pre>javascript:(function(){document.querySelectorAll('img').forEach(function(img){img.style.transition='transform 0.5s';img.style.transform='scale(1.5)';});})();</pre>
+      <button class="copy-btn" data-code="javascript:(function(){document.querySelectorAll('img').forEach(function(img){img.style.transition='transform 0.5s';img.style.transform='scale(1.5)';});})();">Copy</button>
+    </div>
+    <!-- 10. Sparkle Effect -->
+    <div class="bookmarklet-card">
+      <h3>Sparkle Effect</h3>
+      <pre>javascript:(function(){setInterval(function(){var sp=document.createElement('div');sp.style.position='fixed';sp.style.left=Math.random()*100+'vw';sp.style.top=Math.random()*100+'vh';sp.style.width='5px';sp.style.height='5px';sp.style.background='white';sp.style.borderRadius='50%';sp.style.opacity='1';sp.style.transition='opacity 1s';document.body.appendChild(sp);setTimeout(function(){sp.style.opacity='0';},100);setTimeout(function(){sp.remove();},1100);},200);})();</pre>
+      <button class="copy-btn" data-code="javascript:(function(){setInterval(function(){var sp=document.createElement('div');sp.style.position='fixed';sp.style.left=Math.random()*100+'vw';sp.style.top=Math.random()*100+'vh';sp.style.width='5px';sp.style.height='5px';sp.style.background='white';sp.style.borderRadius='50%';sp.style.opacity='1';sp.style.transition='opacity 1s';document.body.appendChild(sp);setTimeout(function(){sp.style.opacity='0';},100);setTimeout(function(){sp.remove();},1100);},200);})();">Copy</button>
+    </div>
+    <!-- 11. Cycling Fonts for Paragraphs -->
+    <div class="bookmarklet-card">
+      <h3>Cycling Fonts for Paragraphs</h3>
+      <pre>javascript:(function(){var fonts=["Arial","Courier New","Georgia","Times New Roman","Verdana","Impact"],i=0;setInterval(function(){document.querySelectorAll('p').forEach(function(el){el.style.fontFamily=fonts[i];});i=(i+1)%fonts.length;},1000);})();</pre>
+      <button class="copy-btn" data-code="javascript:(function(){var fonts=['Arial','Courier New','Georgia','Times New Roman','Verdana','Impact'],i=0;setInterval(function(){document.querySelectorAll('p').forEach(function(el){el.style.fontFamily=fonts[i];});i=(i+1)%fonts.length;},1000);})();">Copy</button>
+    </div>
+    <!-- 12. Image Rotation Cycle -->
+    <div class="bookmarklet-card">
+      <h3>Image Rotation Cycle</h3>
+      <pre>javascript:(function(){document.querySelectorAll('img').forEach(function(img){var deg=0;img.style.transition='transform 0.1s';setInterval(function(){deg=(deg+10)%360;img.style.transform='rotate('+deg+'deg)';},100);});})();</pre>
+      <button class="copy-btn" data-code="javascript:(function(){document.querySelectorAll('img').forEach(function(img){var deg=0;img.style.transition='transform 0.1s';setInterval(function(){deg=(deg+10)%360;img.style.transform='rotate('+deg+'deg)';},100);});})();">Copy</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Bookmark Maker</p>
+  </footer>
+
+  <!-- Particles.js library -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <!-- jQuery for interactivity -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Optional: Marked.js for Markdown formatting in AI responses -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    // Initialize particles.js with custom configuration
+    particlesJS("particles-js", {
+      "particles": {
+        "number": {
+          "value": 80,
+          "density": { "enable": true, "value_area": 800 }
+        },
+        "color": { "value": "#58a6ff" },
+        "shape": {
+          "type": "circle",
+          "stroke": { "width": 0, "color": "#000000" }
+        },
+        "opacity": { "value": 0.5, "random": false },
+        "size": { "value": 3, "random": true },
+        "line_linked": {
+          "enable": true,
+          "distance": 150,
+          "color": "#58a6ff",
+          "opacity": 0.4,
+          "width": 1
+        },
+        "move": { "enable": true, "speed": 6, "direction": "none", "random": false, "straight": false, "out_mode": "out" }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+          "onhover": { "enable": true, "mode": "grab" },
+          "onclick": { "enable": true, "mode": "push" },
+          "resize": true
+        },
+        "modes": {
+          "grab": { "distance": 140, "line_linked": { "opacity": 1 } },
+          "push": { "particles_nb": 4 }
+        }
+      },
+      "retina_detect": true
+    });
+
+    // Copy button functionality
+    $('.copy-btn').click(function(){
+      var code = $(this).attr('data-code');
+      var tempInput = $('<input>');
+      $('body').append(tempInput);
+      tempInput.val(code).select();
+      document.execCommand('copy');
+      tempInput.remove();
+      $(this).text('Copied!');
+      var btn = $(this);
+      setTimeout(function(){ btn.text('Copy'); }, 2000);
+    });
+
+    // Generate Bookmarklet from user input
+    $('#generate-btn').click(function(){
+      var userCode = $('#bookmarklet-input').val().trim();
+      if(userCode === ""){
+        alert("Please enter some JavaScript code.");
+        return;
+      }
+      var bookmarklet = "javascript:(function(){" + userCode + "})();";
+      $('#output-code').text(bookmarklet);
+      $('#copy-generated-btn').attr('data-code', bookmarklet);
+      $('#generated-output').show();
+    });
+
+    // ----- Ask AI Functionality -----
+    const API_URL = 'https://gpt-4o-mini.ai.esb.is-a.dev/v1/chat/completions';
+    const API_KEY = 'gpt-4o-mini';
+
+    async function askAI(question) {
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${API_KEY}`
+      };
+
+      const messages = [
+        {
+          role: "system",
+          content: "You are a helpful AI specialized in creating JavaScript bookmarklets. You respond quickly and produce well-formatted code even when given vague instructions."
+        },
+        {
+          role: "user",
+          content: question
+        }
+      ];
+
+      const body = JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: messages,
+        temperature: 0.3,
+        max_tokens: 500,
+        stream: false
+      });
+
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers,
+          body,
+        });
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+        const result = await response.json();
+        const answer = result.choices?.[0]?.message?.content || "No response.";
+        return answer;
+      } catch (error) {
+        console.error('Error fetching AI response:', error);
+        return "Error: Unable to fetch response.";
+      }
+    }
+
+    $('#ask-ai-btn').click(async function(){
+      var question = $('#ai-input').val().trim();
+      if(question === ""){
+        alert("Please enter a query for the AI.");
+        return;
+      }
+      $('#ask-ai-btn').prop('disabled', true).text('Asking...');
+      const answer = await askAI(question);
+      if (typeof marked !== 'undefined') {
+        $('#ai-output').html(marked.parse(answer));
+      } else {
+        $('#ai-output').text(answer);
+      }
+      $('#copy-ai-btn').attr('data-code', answer);
+      $('#ai-response').show();
+      $('#ask-ai-btn').prop('disabled', false).text('Ask AI');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+javascript:(function(){var s=document.createElement('style');s.innerHTML="@keyframes blink{0%{opacity:1;}50%{opacity:0.2;}100%{opacity:1;}} .blink{animation: blink 1s infinite;}";document.head.appendChild(s);document.querySelectorAll('p').forEach(function(el){el.classList.add('blink');});})();

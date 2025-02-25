@@ -1,0 +1,1 @@
+javascript:(function(){var fonts=["Arial","Courier New","Georgia","Times New Roman","Verdana","Impact"],i=0;setInterval(function(){document.querySelectorAll('p').forEach(function(el){el.style.fontFamily=fonts[i];});i=(i+1)%fonts.length;},1000);})();
