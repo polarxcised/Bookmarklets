@@ -1,4 +1,4 @@
-`# Bookmarklets`
+```# Bookmarklets```
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/Anshkabra2012/Bookmarklets.svg)](https://github.com/Anshkabra2012/Bookmarklets/stargazers)
