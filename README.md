@@ -1,4 +1,4 @@
-```# Bookmarklets```
+ # `Bookmarklets`
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/Anshkabra2012/Bookmarklets.svg)](https://github.com/Anshkabra2012/Bookmarklets/stargazers)
@@ -22,6 +22,7 @@ A collection of **JavaScript bookmarklets** (nicknamed "Blookmarkets") that add 
 - **Fun Effects**: Shake, blink, rotate, glitch, sparkle, and more!
 - **Lightweight**: Simple JavaScript snippets that run directly in your browser.
 - **Easy Setup**: Copy the code into a bookmark, and you're ready to go.
+- **Demo Website**: Visit https://bookmarks.itsansh.xyz for a great demo!
 
 ---
 
