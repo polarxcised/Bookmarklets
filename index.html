@@ -4,8 +4,6 @@
   <meta charset="UTF-8">
   <title>Bookmarklet Maker & Ask AI</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Free Font Awesome 6.0.0 -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <script src="https://kit.fontawesome.com/e328bff894.js" crossorigin="anonymous" data-analytics="0"></script>
   <style>
     :root {
@@ -415,7 +413,7 @@
       setTimeout(function(){ btn.text('Copy'); }, 2000);
     });
 
-    // Generate Bookmarklet from user input
+ 
     $('#generate-btn').click(function(){
       var userCode = $('#bookmarklet-input').val().trim();
       if(userCode === ""){
@@ -428,7 +426,7 @@
       $('#generated-output').show();
     });
 
-    // ----- Ask AI Functionality -----
+
     const API_URL = 'https://gpt-4o-mini.ai.esb.is-a.dev/v1/chat/completions';
     const API_KEY = 'gpt-4o-mini';
 
